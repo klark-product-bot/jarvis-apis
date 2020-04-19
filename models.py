@@ -6,7 +6,7 @@ class User(Document):
     email = EmailField(required=True)
     company_name = StringField(required=True)
     company_url =  URLField(required=True)
-    password =  BinaryField(required=True)
+    password =  StringField(required=True)
     github_url = StringField(required=True, default="")
     confluence_url = StringField(required=True, default="")
     jenkins_url = StringField(required=True, default="")
