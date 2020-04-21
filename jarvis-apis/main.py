@@ -11,6 +11,9 @@ cors = CORS(app)
 api = Api(app)
 mongoengine.connect('Jarvis')
 
+@app.route("/")
+def mainpage():
+    return "API Server Running Correctly"
 
 class Signup(Resource):
     def post(self):
