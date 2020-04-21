@@ -1,4 +1,11 @@
 from mongoengine import Document, StringField, EmailField, URLField, BinaryField
+from mongoengine import EmbeddedDocument, EmbeddedDocumentField
+
+
+class TrelloCredentials(EmbeddedDocument):
+    trelloAPIkey = StringField(required=True, default="")
+    trelloAPISecret = StringField(required=True, default="")
+    board = StringField(required=True, default="")
 
 
 class User(Document):
@@ -10,5 +17,4 @@ class User(Document):
     github_url = StringField(required=True, default="")
     confluence_url = StringField(required=True, default="")
     jenkins_url = StringField(required=True, default="")
-    confluence_url = StringField(required=True, default="")
-    trello_url = StringField(required=True, default="")
+    trello_creds = EmbeddedDocumentField(TrelloCredentials)
