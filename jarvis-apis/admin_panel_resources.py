@@ -12,21 +12,21 @@ def signup(data):
         company_url =  data["company_url"],
         password =  bcrypt.hashpw(data["password"].encode('utf-8'), bcrypt.gensalt())
     )
-    # try:
-    user.save()
-    return {
-        "statusCode": 200,
-        "message": "SignupSuccessful",
-        "auth_token": jwt.encode({
-            'email': data["email"],
-            'expiry_date': (datetime.now()+timedelta(hours=24)- datetime(1970, 1, 1)).total_seconds()
-        }, "YOUR-KEY-GOES-HERE").decode('utf-8')
-    }
-    # except:
-    #     return {
-    #         'statusCode': 301,
-    #         "message": "SignupFailed"
-    #     }
+    try:
+        user.save()
+        return {
+            "statusCode": 200,
+            "message": "SignupSuccessful",
+            "auth_token": jwt.encode({
+                'email': data["email"],
+                'expiry_date': (datetime.now()+timedelta(hours=24)- datetime(1970, 1, 1)).total_seconds()
+            }, "YOUR-KEY-GOES-HERE").decode('utf-8')
+        }
+    except:
+        return {
+            'statusCode': 301,
+            "message": "SignupFailed"
+        }
 
 
 def login(data):
