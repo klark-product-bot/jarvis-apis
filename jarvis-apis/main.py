@@ -32,10 +32,16 @@ class Integrations(Resource):
         resp = listIntgerations(request.headers.get("token"))
         return jsonify(resp)
     def post(self):
-        resp = createIntegrations(request.get_json())
+        resp = createIntegrations(
+            request.headers.get("token"),
+            request.get_json()
+        )
         return jsonify(resp)
     def put(self):
-        resp = updateIntegrations(request.get_json())
+        resp = updateIntegrations(
+            request.headers.get("token"),
+            request.get_json()
+        )
         return jsonify(resp)
 
 

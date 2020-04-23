@@ -20,8 +20,8 @@ def listIntgerations(token):
         )
     }
 
-def createIntegrations(data):
-    tokenValidator = validateToken(data["token"])
+def createIntegrations(token, data):
+    tokenValidator = validateToken(token)
     if not tokenValidator[0]:
         return tokenValidator[1]
     if data.get("trello", False):
@@ -42,5 +42,5 @@ def createIntegrations(data):
         "messages": "Integrations Created/Updated Successfully"
     }   
 
-def updateIntegrations(data):
-    return createIntegrations(data)
+def updateIntegrations(token, data):
+    return createIntegrations(token, data)
