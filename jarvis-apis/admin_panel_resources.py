@@ -30,24 +30,23 @@ def signup(data):
 
 
 def login(data):
-    try:
-        userexists = User.objects.get(email=data["email"])
-        if bcrypt.checkpw(data["password"],userexists.password):
-            return {
-                "statusCode": 200,
-                "message": "LoginSuccessful",
-                "auth_token": jwt.encode({
-                    'email': data["email"],
-                    'expiry_date': (datetime.now()+timedelta(hours=24)- datetime(1970, 1, 1)).total_seconds()
-                }, "YOUR-KEY-GOES-HERE").decode('utf-8')
-            }
-        else:
-            return {
-                "statusCode": 301,
-                "message": "LoginFailed"
-            }  
-    except:
+    userexists = User.objects.get(email=data["email"])
+    if bcrypt.checkpw(data["password"],userexists.password):
+        return {
+            "statusCode": 200,
+            "message": "LoginSuccessful",
+            "auth_token": jwt.encode({
+                'email': data["email"],
+                'expiry_date': (datetime.now()+timedelta(hours=24)- datetime(1970, 1, 1)).total_seconds()
+            }, "YOUR-KEY-GOES-HERE").decode('utf-8')
+        }
+    else:
         return {
             "statusCode": 301,
             "message": "LoginFailed"
-        }
+        }  
+    # except:
+    #     return {
+    #         "statusCode": 301,
+    #         "message": "LoginFailed"
+    #     }

@@ -27,8 +27,8 @@ def createIntegrations(data):
         pass
     if data.get("confluence", False):
         pass
-    if data.get("jenkins", False):
-        pass
+    if data.get("travis", False):
+        tokenValidator[1].update(set__travis_creds=data["travis"]["apikey"])
 
 
 def updateIntegrations(data):

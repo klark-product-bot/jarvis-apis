@@ -16,5 +16,5 @@ class User(Document):
     password =  StringField(required=True)
     github_url = StringField(required=True, default="")
     confluence_url = StringField(required=True, default="")
-    jenkins_url = StringField(required=True, default="")
+    travis_creds = StringField(required=True, default="")
     trello_creds = EmbeddedDocumentField(TrelloCredentials)
