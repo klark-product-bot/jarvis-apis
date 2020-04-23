@@ -29,7 +29,7 @@ class Login(Resource):
 
 class Integrations(Resource):
     def get(self):
-        resp = listIntgerations(request.get_json())
+        resp = listIntgerations(request.headers.get("token"))
         return jsonify(resp)
     def post(self):
         resp = createIntegrations(request.get_json())
