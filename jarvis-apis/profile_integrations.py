@@ -5,19 +5,22 @@ import json
 
 def listIntgerations(token):
     tokenValidator = validateToken(token)
+    # .only(
+
+    # )
     if not tokenValidator[0]:
         return tokenValidator[1]
+    data = json.loads(tokenValidator[1].to_json())
+    data = {
+        "trello_creds":data["trello_creds"],
+        "travis_creds":data["travis_creds"],
+        "github_url":data["github_url"],
+        "confluence_url":data["confluence_url"],
+        "email":data["email"]
+    }
     return {
         "statusCode":200,
-        "users": json.loads(
-            tokenValidator[1].only(
-                "trello_creds",
-                "travis_creds",
-                "github_url",
-                "confluence_url",
-                "email"
-            ).to_json()
-        )
+        "data": data
     }
 
 def createIntegrations(token, data):
