@@ -31,7 +31,10 @@ def signup(data):
 
 def login(data):
     userexists = User.objects.get(email=data["email"])
-    if bcrypt.checkpw(data["password"],userexists.password):
+    if bcrypt.checkpw(
+        data["password"].encode('utf-8'),
+        userexists.password
+        ):
         return {
             "statusCode": 200,
             "message": "LoginSuccessful",
