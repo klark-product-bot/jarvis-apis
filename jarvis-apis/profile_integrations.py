@@ -3,8 +3,8 @@ from config import validateToken
 import json
 
 
-def listIntgerations(data):
-    tokenValidator = validateToken(data["token"])
+def listIntgerations(token):
+    tokenValidator = validateToken(token)
     if not tokenValidator[0]:
         return tokenValidator[1]
     return {
