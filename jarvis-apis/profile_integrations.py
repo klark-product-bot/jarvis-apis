@@ -9,7 +9,15 @@ def listIntgerations(token):
         return tokenValidator[1]
     return {
         "statusCode":200,
-        "users": json.loads(tokenValidator[1].to_json())
+        "users": json.loads(
+            tokenValidator[1].only(
+                "trello_creds",
+                "travis_creds",
+                "github_url",
+                "confluence_url",
+                "email"
+            ).to_json()
+        )
     }
 
 def createIntegrations(data):
@@ -29,7 +37,10 @@ def createIntegrations(data):
         pass
     if data.get("travis", False):
         tokenValidator[1].update(set__travis_creds=data["travis"]["apikey"])
-
+    return {
+        "statusCode":200,
+        "messages": "Integrations Created/Updated Successfully"
+    }   
 
 def updateIntegrations(data):
     return createIntegrations(data)
