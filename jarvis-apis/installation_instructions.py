@@ -25,9 +25,9 @@ def listgitrepos(token):
         }
     else:
         data = resp.json()
-        reponames = {}
+        reponames = []
         for i in data:
-            reponames["name"] = i["name"] 
+            reponames.append({"name": i["name"]}) 
         data = {
             "statusCode": 200,
             "data": reponames
