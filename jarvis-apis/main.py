@@ -54,7 +54,7 @@ class GithubApi(Resource):
 
 class InstallationApi(Resource):
     def get(self):
-        if not request.headers.get("reqddocker"):
+        if request.headers.get("reqddocker") == "false":
             resp = helpwithinstallation(
                 request.headers.get("token"),
                 request.headers.get("projectname"),
