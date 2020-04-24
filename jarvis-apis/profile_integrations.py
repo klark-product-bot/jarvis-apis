@@ -1,4 +1,4 @@
-from models import User, TrelloCredentials
+from models import User, TrelloCredentials, GithubCredentials
 from config import validateToken
 import json
 
@@ -14,7 +14,7 @@ def listIntgerations(token):
     data = {
         "trello_creds":data["trello_creds"],
         "travis_creds":data["travis_creds"],
-        "github_url":data["github_url"],
+        "github_creds":data["github_creds"],
         "confluence_url":data["confluence_url"],
         "email":data["email"]
     }
@@ -35,7 +35,12 @@ def createIntegrations(token, data):
         )
         tokenValidator[1].update(set__trello_creds=trello)
     if data.get("github", False):
-        pass
+        github = GithubCredentials(
+            git_username=data["github"]["username"],
+            git_personal_token=data["github"]["personal_token"],
+            org_name=data["github"]["orgname"]
+        )
+        tokenValidator[1].update(set__github_creds=github)
     if data.get("confluence", False):
         pass
     if data.get("travis", False):

@@ -4,6 +4,7 @@ from flask_cors import CORS
 from admin_panel_resources import signup, login
 from profile_integrations import listIntgerations, createIntegrations
 from profile_integrations import updateIntegrations
+from installation_instructions import listgitrepos, helpwithinstallation
 import mongoengine
 
 app = Flask(__name__)
@@ -44,10 +45,27 @@ class Integrations(Resource):
         )
         return jsonify(resp)
 
+class GithubApi(Resource):
+    def get(self):
+        resp = listgitrepos(
+            request.headers.get("token")
+        )
+        return jsonify(resp)
+
+class InstallationApi(Resource):
+    def get(self):
+        resp = helpwithinstallation(
+            request.headers.get("token"),
+            request.get_json()
+        )
+        return jsonify(resp)
+
 
 api.add_resource(Signup, "/signup")
 api.add_resource(Login, "/login")
 api.add_resource(Integrations, "/integrations")
+api.add_resource(GithubApi, "/github")
+api.add_resource(InstallationApi, "/installation")
 
 
 if __name__ == "__main__":

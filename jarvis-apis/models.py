@@ -8,13 +8,19 @@ class TrelloCredentials(EmbeddedDocument):
     board = StringField(required=True, default="")
 
 
+class GithubCredentials(EmbeddedDocument):
+    git_username = StringField(required=True, default="")
+    git_personal_token = StringField(required=True, default="")
+    org_name = StringField(required=True, default="")
+
+
 class User(Document):
     name = StringField(required=True)
     email = EmailField(required=True, unique=True)
     company_name = StringField(required=True)
     company_url =  URLField(required=True, unique=True)
     password =  BinaryField(required=True)
-    github_url = StringField(required=True, default="")
+    github_creds = EmbeddedDocumentField(GithubCredentials)
     confluence_url = StringField(required=True, default="")
     travis_creds = StringField(required=True, default="")
     trello_creds = EmbeddedDocumentField(TrelloCredentials)
