@@ -48,7 +48,7 @@ def projectreleasestatus(token, projectname):
     milestone["urgent_issues"] = resp.json()
     return {
         "statusCode":200,
-        "milestone": milestone
+        "release_data": milestone
     }
 
 
