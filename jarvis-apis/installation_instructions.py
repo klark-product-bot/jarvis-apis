@@ -48,10 +48,7 @@ def helpwithinstallation(token, projectname, needDocker=False, OS="ubuntu"):
     if resp.status_code != 200:
         return {
             "statusCode": 200, 
-            "message": """
-                    I am extremely sorry but no installation instructions\
-                    were found on your repository. You are on your own for this one.
-                """
+            "message": "I am extremely sorry but no installation instructions were found on your repository. You are on your own for this one."
         }
     resp = resp.text
     soup = BeautifulSoup(
@@ -74,15 +71,12 @@ def helpwithinstallation(token, projectname, needDocker=False, OS="ubuntu"):
     if instrSet == {}:
         return {
             "statusCode": 200, 
-            "message": """
-                    I am extremely sorry but no installation instructions\
-                    were found on your repository. You are on your own for this one.
-                """
+            "message": "I am extremely sorry but no installation instructions were found on your repository. You are on your own for this one."
         }
     if not needDocker:
         return {
             "statusCode": 200,
-            "message": instrSet.get(
+            "instructions": instrSet.get(
                 OS, 
                 "Sorry this software doesn't install on your OS"
             )
@@ -121,9 +115,5 @@ def mailInstallationInstructions(dataToMail, email):
     # TODO Actually send the mail
     return {
         "statusCode": 200, 
-        "message": """
-                A docker file with relevant instructions has been\
-                compiled and sent to your email, please read it and\
-                use docker to run the file on your server.
-            """
+        "message": "A docker file with relevant instructions has been compiled and sent to your email, please read it and use docker to run the file on your server."
     }
