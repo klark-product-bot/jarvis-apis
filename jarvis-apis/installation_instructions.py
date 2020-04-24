@@ -2,6 +2,8 @@ from config import validateToken
 import json
 import base64
 import requests
+import markdown2
+from bs4 import BeautifulSoup
 
 
 def listgitrepos(token):
@@ -30,10 +32,44 @@ def listgitrepos(token):
         return data
     
 
-def helpwithinstallation(token, data):
-    projectname = data["projectname"]
-    needDocker = data["docker"]
+def helpwithinstallation(token, reqdata):
+    tokenValidator = validateToken(token)
+    if not tokenValidator[0]:
+        return tokenValidator[1]
+    data = json.loads(tokenValidator[1].to_json())
+    org_name = data["github_creds"]["org_name"]
+    projectname = reqdata["projectname"]
+    needDocker = reqdata["docker"]
     if not needDocker:
-        OS = data["os"]
+        OS = reqdata["os"]
     else:
         OS = "Ubuntu"
+    url = "https://raw.githubusercontent.com/{}/{}/master/README.md".format(
+        org_name, projectname
+    )
+    resp = requests.get(url).text
+    soup = BeautifulSoup(
+        markdown2.markdown(resp), 
+        "html.parser"
+    )
+    instrSet = {}
+    for i in soup.find_all("code"):
+        instructions = i.get_text()
+        print(instructions, type(instructions))
+        if instructions[0:4] == "bash":
+            if instructions.find("apt") != -1:
+                instrSet["ubuntu"] = instructions[5:].strip().split("\n")
+            elif instructions.find("yum"):
+                instrSet["redhat"] = instructions[5:].strip().split("\n")
+        elif instructions[0:6] == "shell":
+            instrSet["windows"] = instructions[7:].strip().split("\n")
+        else:
+            instrSet["macos"] = instructions[7:].strip().split("\n")
+    if not needDocker:
+        return {
+            "statusCode": 200,
+            "message": instrSet.get(
+                OS, 
+                "Sorry this software doesn't install on your OS"
+            )
+        }
