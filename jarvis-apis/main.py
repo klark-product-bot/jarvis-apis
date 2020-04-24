@@ -5,6 +5,7 @@ from admin_panel_resources import signup, login
 from profile_integrations import listIntgerations, createIntegrations
 from profile_integrations import updateIntegrations
 from installation_instructions import listgitrepos, helpwithinstallation
+from installation_instructions import projectreleasestatus
 import mongoengine
 
 app = Flask(__name__)
@@ -69,12 +70,21 @@ class InstallationApi(Resource):
             )
         return jsonify(resp)
 
+class ProjectStatus(Resource):
+    def get(self):
+        resp = projectreleasestatus(
+            request.headers.get("token"),
+            request.headers.get("projectname")
+        )
+        return jsonify(resp)
+
 
 api.add_resource(Signup, "/signup")
 api.add_resource(Login, "/login")
 api.add_resource(Integrations, "/integrations")
 api.add_resource(GithubApi, "/github")
 api.add_resource(InstallationApi, "/installation")
+api.add_resource(ProjectStatus, "/status/project")
 
 
 if __name__ == "__main__":

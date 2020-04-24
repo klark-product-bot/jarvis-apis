@@ -4,6 +4,52 @@ import base64
 import requests
 import markdown2
 from bs4 import BeautifulSoup
+# from os import environ
+
+def githubCredBuilder(userdata):
+    username = userdata["github_creds"]["git_username"]
+    personal_token = userdata["github_creds"]["git_personal_token"]
+    base64string = base64.encodestring('{}/token:{}'.format(username, personal_token).encode()).decode().replace("\n", "")
+    return {"Authorization": "Basic "+base64string}
+
+
+def projectreleasestatus(token, projectname):
+    tokenValidator = validateToken(token)
+    if not tokenValidator[0]:
+        return tokenValidator[1]
+    data = json.loads(tokenValidator[1].to_json())
+    org_name = data["github_creds"]["org_name"]
+    milestone_url = "https://api.github.com/repos/{}/{}/milestones?sort=due_on"
+    milestone_url = milestone_url.format(org_name, projectname)
+    github_creds = githubCredBuilder(data)
+    resp = requests.get(milestone_url, headers=github_creds)
+    if resp.status_code != 200:
+        return {
+            "statusCode": 301,
+            "reason": resp.json(),
+            "message": "Milestone Request Failed"
+        }
+    resp = resp.json()
+    if len(resp)<1:
+        return {
+            "statusCode": 301,
+            "message": "No Milestone Found"
+        }
+    milestone = resp[0]
+    issues_url = "https://api.github.com/repos/{}/{}/issues?state=all&labels=urgent&milestone={}"
+    issues_url = issues_url.format(org_name, projectname, milestone["number"])
+    resp = requests.get(issues_url, headers=github_creds)
+    if resp.status_code != 200:
+        return {
+            "statusCode": 301,
+            "reason": resp.json(),
+            "message": "Milestone Request Failed"
+        }
+    milestone["urgent_issues"] = resp.json()
+    return {
+        "statusCode":200,
+        "milestone": milestone
+    }
 
 
 def listgitrepos(token):
@@ -11,12 +57,9 @@ def listgitrepos(token):
     if not tokenValidator[0]:
         return tokenValidator[1]
     data = json.loads(tokenValidator[1].to_json())
-    username = data["github_creds"]["git_username"]
-    personal_token = data["github_creds"]["git_personal_token"]
     org_name = data["github_creds"]["org_name"]
     url = "https://api.github.com/orgs/{}/repos".format(org_name)
-    base64string = base64.encodestring('{}/token:{}'.format(username, personal_token).encode()).decode().replace("\n", "")
-    resp = requests.get(url, headers={"Authorization": "Basic "+base64string})
+    resp = requests.get(url, headers=githubCredBuilder(data))
     if resp.status_code != 200:
         return {
             "statusCode": 301,
@@ -113,6 +156,8 @@ def helpwithinstallation(token, projectname, needDocker=False, OS="ubuntu"):
 
 def mailInstallationInstructions(dataToMail, email):
     # TODO Actually send the mail
+    # email_username = environ.get('username')
+    # email_password = environ.get('password')
     return {
         "statusCode": 200, 
         "message": "A docker file with relevant instructions has been compiled and sent to your email, please read it and use docker to run the file on your server."
