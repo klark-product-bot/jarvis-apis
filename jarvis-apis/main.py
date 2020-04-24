@@ -54,10 +54,19 @@ class GithubApi(Resource):
 
 class InstallationApi(Resource):
     def get(self):
-        resp = helpwithinstallation(
-            request.headers.get("token"),
-            request.get_json()
-        )
+        if not request.headers.get("reqddocker"):
+            resp = helpwithinstallation(
+                request.headers.get("token"),
+                request.headers.get("projectname"),
+                False,
+                request.headers.get("os")
+            )
+        else:
+            resp = helpwithinstallation(
+                request.headers.get("token"),
+                request.headers.get("projectname"),
+                True
+            )
         return jsonify(resp)
 
 

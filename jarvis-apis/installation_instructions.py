@@ -32,18 +32,12 @@ def listgitrepos(token):
         return data
     
 
-def helpwithinstallation(token, reqdata):
+def helpwithinstallation(token, projectname, needDocker=False, OS="ubuntu"):
     tokenValidator = validateToken(token)
     if not tokenValidator[0]:
         return tokenValidator[1]
     data = json.loads(tokenValidator[1].to_json())
     org_name = data["github_creds"]["org_name"]
-    projectname = reqdata["projectname"]
-    needDocker = reqdata["docker"]
-    if not needDocker:
-        OS = reqdata["os"]
-    else:
-        OS = "Ubuntu"
     url = "https://raw.githubusercontent.com/{}/{}/master/README.md".format(
         org_name, projectname
     )
