@@ -18,6 +18,7 @@ def listgitrepos(token):
     if resp.status_code != 200:
         return {
             "statusCode": 301,
+            "reason": resp.json()
             "message": "Repository Request Failed"
         }
     else:
