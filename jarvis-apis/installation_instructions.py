@@ -47,7 +47,16 @@ def helpwithinstallation(token, reqdata):
     url = "https://raw.githubusercontent.com/{}/{}/master/README.md".format(
         org_name, projectname
     )
-    resp = requests.get(url).text
+    resp = requests.get(url)
+    if resp.status_code != 200:
+        return {
+            "statusCode": 200, 
+            "message": """
+                    I am extremely sorry but no installation instructions\
+                    were found on your repository. You are on your own for this one.
+                """
+        }
+    resp = resp.text
     soup = BeautifulSoup(
         markdown2.markdown(resp), 
         "html.parser"
@@ -65,6 +74,14 @@ def helpwithinstallation(token, reqdata):
             instrSet["windows"] = instructions[7:].strip().split("\n")
         else:
             instrSet["macos"] = instructions[7:].strip().split("\n")
+    if instrSet == {}:
+        return {
+            "statusCode": 200, 
+            "message": """
+                    I am extremely sorry but no installation instructions\
+                    were found on your repository. You are on your own for this one.
+                """
+        }
     if not needDocker:
         return {
             "statusCode": 200,
