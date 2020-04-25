@@ -73,10 +73,16 @@ def featureDevelopmentSummary(token, projectname, issuename):
             metadata_str += ("The most recent comment by the customer is: " + resp.json()[-1]["body"][: 150])
     restr_timeline = []
     for i in timelineresp:
-        if i["event"] in ["closed", "labelled", "milestoned", "demilestoned", "closed", "reopened"]:
-            i["created_at"] = parse(i["created_at"]).strftime("%I:%M %p %d %B, %Y")
-            i["actor"] = i["actor"]["login"]
-            restr_timeline.append(i)
+        try:
+            if i["event"] in ["closed", "labelled", "milestoned", "demilestoned", "closed", "reopened"]:
+                i["created_at"] = parse(i["created_at"]).strftime("%I:%M %p %d %B, %Y")
+                i["actor"] = i["actor"]["login"]
+                restr_timeline.append(i)
+        except:
+            return {
+                "status_code": 200,
+                "data": timelineresp
+            }
     changehistory_str = "Now we will begin with the detailed change history of the feature timeline. "
     changehistory_str = ""
     for i in restr_timeline:
