@@ -3,21 +3,8 @@ import json
 import requests
 from dateutil.parser import parse
 from datetime import datetime, timezone
+from config import timebuilder
 
-def timebuilder(val):
-    val = int(val)
-    if val < 100:
-        return val, "seconds"
-    elif val < 3600:
-        return val//60, "minutes"
-    elif val < 86400:
-        return val//3600, "hours"
-    else:
-        val = val//86400
-    if val < 60:
-        return val, "days"
-    else:
-        return val//30, "months"
 
 def buildResult(token, projectname):
     tokenValidator = validateToken(token)
@@ -45,7 +32,7 @@ def buildResult(token, projectname):
     a, b = timebuilder(sum([i["duration"] for i in resp]))
     message_builder = message_builder.format(a, b)
     first_item = resp[0] 
-    message_builder += "The latest build was started at {} ."
+    message_builder += "The latest build was started at {}. "
     message_builder = message_builder.format(
         parse(first_item["started_at"]).strftime("%I:%M %p %d %B, %Y")
     )
@@ -53,7 +40,7 @@ def buildResult(token, projectname):
         message_builder += "It finished {} {} ago with status as"
         a, b = timebuilder(
             (
-                datetime.now(timezone.utc) - parse(first_item["started_at"])
+                datetime.now(timezone.utc) - parse(first_item["finished_at"])
             ).seconds
         )
         message_builder = message_builder.format(a, b)

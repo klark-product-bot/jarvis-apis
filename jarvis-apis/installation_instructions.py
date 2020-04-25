@@ -4,7 +4,11 @@ import base64
 import requests
 import markdown2
 from bs4 import BeautifulSoup
-# from os import environ
+from dateutil.parser import parse
+from datetime import datetime, timezone
+from config import timebuilder
+
+
 
 def githubCredBuilder(userdata):
     username = userdata["github_creds"]["git_username"]
@@ -33,10 +37,47 @@ def featureDevelopmentSummary(token, projectname, issuename):
     for i in resp.json():
         if i["name"].lower() == issuename.lower():
             issueNumber = i["number"]
+            issueData = i
     timeline_url = "https://api.github.com/repos/{}/{}/issues/{}/timeline"
     timeline_url.format(org_name, projectname, issueNumber)
     github_creds["Accept"] = "application/vnd.github.mockingbird-preview"
-    resp = requests.get(timeline_url, headers=github_creds)
+    timelineresp = requests.get(timeline_url, headers=github_creds)
+    if resp.status_code != 200:
+        return {
+            "statusCode": 301,
+            "reason": resp.json(),
+            "message": "Could not get feature timeline"
+        }
+    timelineresp = timelineresp.json()
+    metadata_str = "This feature request was first added by {} on {} and was last updated {} {} ago. The current feature description is {}. The client has added {} extra comments on it."
+    a, b = timebuilder(
+        (
+            datetime.now(timezone.utc) - parse(issueData["updated_at"])
+        ).seconds
+    )
+    metadata_str = metadata_str.format(
+        issueData["user"]["login"],
+        parse(issueData["created_at"]).strftime("%I:%M %p %d %B, %Y"),
+        a,
+        b,
+        issueData["body"],
+        issueData["comments"]
+    )
+    if issueData["comments"] != 0:
+        comments_url = "https://api.github.com/repos/{}/{}/issues/{}/comments"
+        comments_url.format(org_name, projectname, issueNumber)
+        resp = requests.get(comments_url, headers={"Authorization": github_creds["Authorization"]})
+        if resp.status_code != 200:
+            metadata_str += ("The most recent comment by the customer is: " + resp.json()[-1]["Body"][: 150])
+    
+    restr_timeline = []
+    for i in timelineresp:
+        if i["event"] in ["closed", "labelled", "milestoned", "demilestoned", "closed", "reopened"]:
+            restr_timeline.append(i)
+    changehistory_str = "Now we will begin with the detailed change history of the feature timeline. "
+
+
+
 
 
 
@@ -56,8 +97,8 @@ def projectreleasestatus(token, projectname):
             "reason": resp.json(),
             "message": "Milestone Request Failed"
         }
+    resp = resp.json()
     if len(resp)<1:
-        resp = resp.json()
         return {
             "statusCode": 301,
             "message": "No Milestone Found"
