@@ -61,9 +61,9 @@ def buildResult(token, projectname):
         resp = requests.get(
             badge_url.format(org_name,projectname,first_item["branch"])
         )
-        if a.text.find("passing") != -1:
+        if resp.text.find("passing") != -1:
             message_builder += " build passed. "
-        elif a.text.find("failing") != -1:
+        elif resp.text.find("failing") != -1:
             message_builder += " build failed. "
         else:
             message_builder += " build invalid. "
