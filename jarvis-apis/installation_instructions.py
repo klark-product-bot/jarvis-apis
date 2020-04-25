@@ -70,7 +70,8 @@ def featureDevelopmentSummary(token, projectname, issuename):
         comments_url = comments_url.format(org_name, projectname, issueNumber)
         resp = requests.get(comments_url, headers={"Authorization": github_creds["Authorization"]})
         if resp.status_code != 200 and len(resp.json()) >= 1:
-            metadata_str += ("The most recent comment by the customer is: " + resp.json()[-1]["body"][: 150])
+            comment_data = "The most recent comment by the customer is: " + resp.json()[-1]["body"][: 150]
+            metadata_str += comment_data
     restr_timeline = []
     for i in timelineresp:
         try:
