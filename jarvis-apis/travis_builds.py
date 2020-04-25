@@ -2,7 +2,7 @@ from config import validateToken
 import json
 import requests
 from dateutil.parser import parse
-from datetime import datetime
+from datetime import datetime, timezone
 
 def timebuilder(val):
     val = int(val)
@@ -53,7 +53,7 @@ def buildResult(token, projectname):
         message_builder += "It finished {} {} ago with status as"
         a, b = timebuilder(
             (
-                datetime.now() - parse(first_item["started_at"])
+                datetime.now(timezone.utc) - parse(first_item["started_at"])
             ).seconds
         )
         message_builder = message_builder.format(a, b)
