@@ -78,7 +78,7 @@ def featureDevelopmentSummary(token, projectname, issuename):
         "data": timelineresp
     }
     for i in timelineresp:
-        if i["event"] in ["closed", "labelled", "milestoned", "demilestoned", "closed", "reopened", "referenced", "assigned"]:
+        if i["event"] in ["closed", "labeled", "milestoned", "closed", "reopened", "referenced", "assigned", "commented"]:
             i["created_at"] = parse(i["created_at"]).strftime("%I:%M %p %d %B, %Y")
             i["actor"] = i["actor"]["login"]
             restr_timeline.append(i)
@@ -101,6 +101,8 @@ def featureDevelopmentSummary(token, projectname, issuename):
             content += "this feature request was reopened by {} on {}. ".format(i["actor"], i["created_at"])
         elif i["event"] == "assigned":
             content += "this feature request was assigned to {} by {} on {}. ".format(i["assignee"]["login"], i["actor"], i["created_at"])
+        elif i["event"] == "referenced":
+            content += "this feature request was referenced by {} via commit id {} on {}. ".format(i["actor"], i["commit_id"], i["created_at"])
         elif i["event"] == "referenced":
             content += "this feature request was referenced by {} via commit id {} on {}. ".format(i["actor"], i["commit_id"], i["created_at"])
         
