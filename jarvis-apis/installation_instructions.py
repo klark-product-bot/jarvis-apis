@@ -65,6 +65,10 @@ def featureDevelopmentSummary(token, projectname, issuename):
         issueData["body"],
         issueData["comments"]
     )
+    return {
+        "statusCode": 203,
+        "data": metadata_str
+    }
     if issueData["comments"] != 0:
         comments_url = "https://api.github.com/repos/{}/{}/issues/{}/comments"
         comments_url = comments_url.format(org_name, projectname, issueNumber)
@@ -74,16 +78,10 @@ def featureDevelopmentSummary(token, projectname, issuename):
             metadata_str += comment_data
     restr_timeline = []
     for i in timelineresp:
-        try:
-            if i["event"] in ["closed", "labelled", "milestoned", "demilestoned", "closed", "reopened"]:
-                i["created_at"] = parse(i["created_at"]).strftime("%I:%M %p %d %B, %Y")
-                i["actor"] = i["actor"]["login"]
-                restr_timeline.append(i)
-        except:
-            return {
-                "status_code": 200,
-                "data": timelineresp
-            }
+        if i["event"] in ["closed", "labelled", "milestoned", "demilestoned", "closed", "reopened"]:
+            i["created_at"] = parse(i["created_at"]).strftime("%I:%M %p %d %B, %Y")
+            i["actor"] = i["actor"]["login"]
+            restr_timeline.append(i)
     changehistory_str = "Now we will begin with the detailed change history of the feature timeline. "
     changehistory_str = ""
     for i in restr_timeline:
