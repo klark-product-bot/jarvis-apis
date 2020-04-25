@@ -26,7 +26,6 @@ def featureDevelopmentSummary(token, projectname, issuename):
     github_creds = githubCredBuilder(data)
     issues_url = "https://api.github.com/repos/{}/{}/issues?state=all"
     issues_url = issues_url.format(org_name, projectname)
-    github_creds = githubCredBuilder(data)
     resp = requests.get(issues_url, headers=github_creds)
     if resp.status_code != 200:
         return {
@@ -87,7 +86,7 @@ def featureDevelopmentSummary(token, projectname, issuename):
             content = "Lastly, "
         else:
             content = "Then, "
-        if i["event"] == "labelled":
+        if i["event"] == "labeled":
             content += "a label {} was added on the feature request by {} on {}. ".format(i["label"]["name"], i["actor"], i["created_at"])
         elif i["event"] == "milestoned":
             content += "this feature request {} was added by {} on {}. ".format(i["milestone"]["title"], i["actor"], i["created_at"])
@@ -99,9 +98,8 @@ def featureDevelopmentSummary(token, projectname, issuename):
             content += "this feature request was assigned to {} by {} on {}. ".format(i["assignee"]["login"], i["actor"], i["created_at"])
         elif i["event"] == "referenced":
             content += "this feature request was referenced by {} via commit id {} on {}. ".format(i["actor"], i["commit_id"], i["created_at"])
-        elif i["event"] == "referenced":
-            content += "this feature request was referenced by {} via commit id {} on {}. ".format(i["actor"], i["commit_id"], i["created_at"])
-        
+        elif i["event"] == "commented":
+            content += "this feature request was commented on by {} at {}. He said that {}".format(i["actor"], i["created_at"], i["body"])
         changehistory_str += content
     
     return {
