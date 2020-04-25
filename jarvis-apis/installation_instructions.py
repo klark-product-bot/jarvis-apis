@@ -51,7 +51,7 @@ def featureDevelopmentSummary(token, projectname, issuename):
             "message": "Could not get feature timeline"
         }
     timelineresp = timelineresp.json()
-    metadata_str = "This feature request was first added by {} on {} and was last updated {} {} ago. The current feature description is {}. The client has added {} extra comments on it."
+    metadata_str = "This feature request was first added by {} on {} and was last updated {} {} ago. The current feature description is {} The client has added {} extra comments on it."
     a, b = timebuilder(
         (
             datetime.now(timezone.utc) - parse(issueData["updated_at"])
@@ -65,10 +65,6 @@ def featureDevelopmentSummary(token, projectname, issuename):
         issueData["body"],
         issueData["comments"]
     )
-    return {
-        "statusCode": 203,
-        "data": metadata_str
-    }
     if issueData["comments"] != 0:
         comments_url = "https://api.github.com/repos/{}/{}/issues/{}/comments"
         comments_url = comments_url.format(org_name, projectname, issueNumber)
@@ -76,6 +72,10 @@ def featureDevelopmentSummary(token, projectname, issuename):
         if resp.status_code != 200 and len(resp.json()) >= 1:
             comment_data = "The most recent comment by the customer is: " + resp.json()[-1]["body"][: 150]
             metadata_str += comment_data
+    return {
+        "statusCode": 203,
+        "data": metadata_str
+    }
     restr_timeline = []
     for i in timelineresp:
         if i["event"] in ["closed", "labelled", "milestoned", "demilestoned", "closed", "reopened"]:
