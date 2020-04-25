@@ -32,6 +32,7 @@ def featureDevelopmentSummary(token, projectname, issuename):
         return {
             "statusCode": 301,
             "reason": resp.json(),
+            "issues_url": issues_url,
             "message": "Issues Request Failed"
         }
     for i in resp.json():
@@ -46,6 +47,7 @@ def featureDevelopmentSummary(token, projectname, issuename):
         return {
             "statusCode": 301,
             "reason": resp.json(),
+            "timeline_url": timeline_url,
             "message": "Could not get feature timeline"
         }
     timelineresp = timelineresp.json()
