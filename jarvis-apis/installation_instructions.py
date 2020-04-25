@@ -31,9 +31,9 @@ def featureDevelopmentSummary(token, projectname, issuename):
     if resp.status_code != 200:
         return {
             "statusCode": 301,
+            "reason": resp.json(),
             "message": "Issues Request Failed"
         }
-    issueNumber = 1
     for i in resp.json():
         if i["name"].lower() == issuename.lower():
             issueNumber = i["number"]
