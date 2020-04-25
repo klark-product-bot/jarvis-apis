@@ -40,13 +40,13 @@ def featureDevelopmentSummary(token, projectname, issuename):
             issueNumber = i["number"]
             issueData = i
     timeline_url = "https://api.github.com/repos/{}/{}/issues/{}/timeline"
-    timeline_url.format(org_name, projectname, issueNumber)
+    timeline_url = timeline_url.format(org_name, projectname, issueNumber)
     github_creds["Accept"] = "application/vnd.github.mockingbird-preview"
     timelineresp = requests.get(timeline_url, headers=github_creds)
-    if resp.status_code != 200:
+    if timelineresp.status_code != 200:
         return {
             "statusCode": 301,
-            "reason": resp.json(),
+            "reason": timelineresp.json(),
             "timeline_url": timeline_url,
             "message": "Could not get feature timeline"
         }
