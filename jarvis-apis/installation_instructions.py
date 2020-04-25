@@ -13,6 +13,33 @@ def githubCredBuilder(userdata):
     return {"Authorization": "Basic "+base64string}
 
 
+def featureDevelopmentSummary(token, projectname, issuename):
+    tokenValidator = validateToken(token)
+    if not tokenValidator[0]:
+        return tokenValidator[1]
+    data = json.loads(tokenValidator[1].to_json())
+    org_name = data["github_creds"]["org_name"]
+    github_creds = githubCredBuilder(data)
+    issues_url = "https://api.github.com/repos/{}/{}/issues?state=all"
+    issues_url.format(org_name, projectname)
+    github_creds = githubCredBuilder(data)
+    resp = requests.get(issues_url, headers=github_creds)
+    if resp.status_code != 200:
+        return {
+            "statusCode": 301,
+            "message": "Issues Request Failed"
+        }
+    issueNumber = 1
+    for i in resp.json():
+        if i["name"].lower() == issuename.lower():
+            issueNumber = i["number"]
+    timeline_url = "https://api.github.com/repos/{}/{}/issues/{}/timeline"
+    timeline_url.format(org_name, projectname, issueNumber)
+    github_creds["Accept"] = "application/vnd.github.mockingbird-preview","description":""}
+    resp = requests.get(timeline_url, headers=github_creds)
+    
+
+
 def projectreleasestatus(token, projectname):
     tokenValidator = validateToken(token)
     if not tokenValidator[0]:
@@ -29,8 +56,8 @@ def projectreleasestatus(token, projectname):
             "reason": resp.json(),
             "message": "Milestone Request Failed"
         }
-    resp = resp.json()
     if len(resp)<1:
+    resp = resp.json()
         return {
             "statusCode": 301,
             "message": "No Milestone Found"
@@ -48,7 +75,7 @@ def projectreleasestatus(token, projectname):
     milestone["urgent_issues"] = resp.json()
     return {
         "statusCode":200,
-        "release_data": milestone
+        "milestone": milestone
     }
 
 
@@ -161,4 +188,4 @@ def mailInstallationInstructions(dataToMail, email):
     return {
         "statusCode": 200, 
         "message": "A docker file with relevant instructions has been compiled and sent to your email, please read it and use docker to run the file on your server."
-    }
+    }   
