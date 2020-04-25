@@ -36,7 +36,7 @@ def featureDevelopmentSummary(token, projectname, issuename):
             "message": "Issues Request Failed"
         }
     for i in resp.json():
-        if i["name"].lower() == issuename.lower():
+        if i["title"].lower() == issuename.lower():
             issueNumber = i["number"]
             issueData = i
     timeline_url = "https://api.github.com/repos/{}/{}/issues/{}/timeline"
