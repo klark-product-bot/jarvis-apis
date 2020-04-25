@@ -75,4 +75,7 @@ def buildResult(token, projectname):
         first_item["message"].lower()[:100],
         first_item["branch"]
     )
-
+    return {
+        'statusCode':200,
+        'message': message_builder
+    }
