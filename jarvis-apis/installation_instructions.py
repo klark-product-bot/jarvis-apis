@@ -57,7 +57,7 @@ def projectreleasestatus(token, projectname):
             "message": "Milestone Request Failed"
         }
     if len(resp)<1:
-    resp = resp.json()
+        resp = resp.json()
         return {
             "statusCode": 301,
             "message": "No Milestone Found"
