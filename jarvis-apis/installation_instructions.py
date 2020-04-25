@@ -25,7 +25,7 @@ def featureDevelopmentSummary(token, projectname, issuename):
     org_name = data["github_creds"]["org_name"]
     github_creds = githubCredBuilder(data)
     issues_url = "https://api.github.com/repos/{}/{}/issues?state=all"
-    issues_url.format(org_name, projectname)
+    issues_url = issues_url.format(org_name, projectname)
     github_creds = githubCredBuilder(data)
     resp = requests.get(issues_url, headers=github_creds)
     if resp.status_code != 200:
