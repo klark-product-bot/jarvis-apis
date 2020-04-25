@@ -6,6 +6,7 @@ from profile_integrations import listIntgerations, createIntegrations
 from profile_integrations import updateIntegrations
 from installation_instructions import listgitrepos, helpwithinstallation
 from installation_instructions import projectreleasestatus
+from installation_instructions import featureDevelopmentSummary
 from travis_builds import buildResult
 import mongoengine
 
@@ -87,6 +88,15 @@ class TravisBuilds(Resource):
         )
         return jsonify(resp)
 
+class FeatureSummary(Resource):
+    def get(self):
+        resp = featureDevelopmentSummary(
+            request.headers.get("token"),
+            request.headers.get("projectname"),
+            request.headers.get("issuename"),
+        )
+        return jsonify(resp)
+
 
 api.add_resource(Signup, "/signup")
 api.add_resource(Login, "/login")
@@ -94,6 +104,7 @@ api.add_resource(Integrations, "/integrations")
 api.add_resource(GithubApi, "/github")
 api.add_resource(InstallationApi, "/installation")
 api.add_resource(ProjectStatus, "/status/project")
+api.add_resource(FeatureSummary, "/summary/featuredev")
 api.add_resource(TravisBuilds, "/buildresult")
 
 

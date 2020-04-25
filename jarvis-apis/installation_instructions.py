@@ -73,8 +73,40 @@ def featureDevelopmentSummary(token, projectname, issuename):
     restr_timeline = []
     for i in timelineresp:
         if i["event"] in ["closed", "labelled", "milestoned", "demilestoned", "closed", "reopened"]:
+            i["created_at"] = parse(i["created_at"]).strftime("%I:%M %p %d %B, %Y")
+            i["actor"] = i["actor"]["login"]
             restr_timeline.append(i)
     changehistory_str = "Now we will begin with the detailed change history of the feature timeline. "
+    changehistory_str = ""
+    for i in restr_timeline:
+        if i == restr_timeline[0]:
+            content = "Firstly, "
+        elif i == restr_timeline[-1]:
+            content = "Lastly, "
+        else:
+            content = "Then, "
+        if i["event"] == "labelled":
+            content += "a label {} was added on the feature request by {} on {}. ".format(i["label"]["name"], i["actor"], i["created_at"])
+        elif i["event"] == "milestoned":
+            content += "this feature request {} was added by {} on {}. ".format(i["milestone"]["title"], i["actor"], i["created_at"])
+        elif i["event"] == "closed":
+            content += "this feature request was closed by {} on {}. ".format(i["actor"], i["created_at"])
+        elif i["event"] == "reopened":
+            content += "this feature request was reopened by {} on {}. ".format(i["actor"], i["created_at"])
+        elif i["event"] == "assigned":
+            content += "this feature request was assigned to {} by {} on {}. ".format(i["assignee"]["login"], i["actor"], i["created_at"])
+        elif i["event"] == "referenced":
+            content += "this feature request was referenced by {} via commit id {} on {}. ".format(i["actor"], i["commit_id"], i["created_at"])
+        
+        changehistory_str += content
+    
+    return {
+        "statusCode": 200,
+        "change_history": changehistory_str,
+        "metadata_string": metadata_str 
+    }
+
+
 
 
 
