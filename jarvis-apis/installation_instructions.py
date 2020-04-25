@@ -35,9 +35,9 @@ def featureDevelopmentSummary(token, projectname, issuename):
             issueNumber = i["number"]
     timeline_url = "https://api.github.com/repos/{}/{}/issues/{}/timeline"
     timeline_url.format(org_name, projectname, issueNumber)
-    github_creds["Accept"] = "application/vnd.github.mockingbird-preview","description":""}
+    github_creds["Accept"] = "application/vnd.github.mockingbird-preview"
     resp = requests.get(timeline_url, headers=github_creds)
-    
+
 
 
 def projectreleasestatus(token, projectname):
