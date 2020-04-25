@@ -67,16 +67,10 @@ def featureDevelopmentSummary(token, projectname, issuename):
     )
     if issueData["comments"] != 0:
         comments_url = "https://api.github.com/repos/{}/{}/issues/{}/comments"
-        comments_url.format(org_name, projectname, issueNumber)
+        comments_url = comments_url.format(org_name, projectname, issueNumber)
         resp = requests.get(comments_url, headers={"Authorization": github_creds["Authorization"]})
-        if resp.status_code != 200:
-            try:
-                metadata_str += ("The most recent comment by the customer is: " + resp.json()[-1]["body"][: 150])
-            except:
-                return {
-                    "statusCode": 200,
-                    "response": resp.json()
-                }
+        if resp.status_code != 200 and len(resp.json()) >= 1:
+            metadata_str += ("The most recent comment by the customer is: " + resp.json()[-1]["body"][: 150])
     restr_timeline = []
     for i in timelineresp:
         if i["event"] in ["closed", "labelled", "milestoned", "demilestoned", "closed", "reopened"]:
