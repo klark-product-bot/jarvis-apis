@@ -41,7 +41,7 @@ def buildResult(token, projectname):
         }
     message_builder = "Total Number of builds run for this project are {}. "
     message_builder = message_builder.format(len(resp))
-    message_builder += "Total build time of all the builds is {} {}"
+    message_builder += "Total build time of all completed builds was {} {}. "
     a, b = timebuilder(sum([i["duration"] for i in resp]))
     message_builder = message_builder.format(a, b)
     first_item = resp[0] 
