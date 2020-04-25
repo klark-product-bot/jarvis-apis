@@ -73,10 +73,6 @@ def featureDevelopmentSummary(token, projectname, issuename):
             comment_data = "The most recent comment by the customer is: " + resp.json()[-1]["body"][: 150]
             metadata_str += comment_data
     restr_timeline = []
-    return {
-        "statusCode": 203,
-        "data": timelineresp
-    }
     for i in timelineresp:
         if i["event"] in ["closed", "labeled", "milestoned", "closed", "reopened", "referenced", "assigned", "commented"]:
             i["created_at"] = parse(i["created_at"]).strftime("%I:%M %p %d %B, %Y")
